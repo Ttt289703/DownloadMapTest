@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/drawable/ic_cancel.xml" value="0.522" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/drawable/ic_region_map.xml" value="0.264" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/layout/continent_list_item.xml" value="0.38333333333333336" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/layout/fragment_device_memory.xml" value="0.5401041666666667" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/layout/fragment_main.xml" value="0.405078125" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/layout/fragment_region_list.xml" value="0.5077186963979416" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/layout/fragment_start.xml" value="0.33" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/layout/free_space_view.xml" value="0.41527001862197394" />
+        <entry key="..\:/Main/Code/Android/FragmentTest/app/src/main/res/layout/region_list_item.xml" value="0.49498327759197325" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
