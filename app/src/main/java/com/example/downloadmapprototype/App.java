@@ -2,19 +2,25 @@ package com.example.downloadmapprototype;
 
 import android.app.Application;
 
-import com.example.downloadmapprototype.model.data.RegionDataHolder;
-import com.example.downloadmapprototype.model.downloader.DownloadService;
+import com.example.downloadmapprototype.model.data.RegionService;
+import com.example.downloadmapprototype.model.downloader.DownloadMapService;
 
 public class App extends Application {
-    //RegionService regionService = new RegionService();
-    //RegionDownloader regionDownloader = new RegionDownloader();
-
-
+    RegionService regionService;
+    DownloadMapService downloadMapService;
     @Override
     public void onCreate() {
         super.onCreate();
-        RegionDataHolder dataHolder = new RegionDataHolder(this);
-        DownloadService.getInstance().setContext(this);
+        regionService = RegionService.getInstance(this);
+        downloadMapService = DownloadMapService.getInstance(this);
+    }
+
+    public RegionService getRegionService(){
+        return regionService;
+    }
+
+    public DownloadMapService getDownloadMapService(){
+        return downloadMapService;
     }
 
 }

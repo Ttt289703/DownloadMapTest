@@ -1,32 +1,23 @@
-package com.example.downloadmapprototype;
+package com.example.downloadmapprototype.screens;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
+import com.example.downloadmapprototype.R;
 import com.example.downloadmapprototype.contract.HasCustomTitle;
 import com.example.downloadmapprototype.contract.Navigator;
 import com.example.downloadmapprototype.databinding.ActivityMainBinding;
-import com.example.downloadmapprototype.model.data.Region;
-import com.example.downloadmapprototype.model.data.RegionService;
-import com.example.downloadmapprototype.model.data.RegionDataHolder;
+import com.example.downloadmapprototype.screens.regions.RegionListFragment;
+import com.example.downloadmapprototype.screens.start.StartFragment;
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements Navigator {
-
     private ActivityMainBinding binding;
 
     public Fragment getCurrentFragment() {
@@ -54,9 +45,7 @@ public class MainActivity extends AppCompatActivity implements Navigator {
         setContentView(binding.getRoot());
 
         if (savedInstanceState == null) {
-            ArrayList<Region> flatListOfRegions = RegionService.getFlatContinentAndCountriesList(RegionDataHolder.regions);
-            showStartFragment(flatListOfRegions);
-
+            showStartFragment();
         }
         getSupportFragmentManager().registerFragmentLifecycleCallbacks(fragmentListener, false);
     }
@@ -104,12 +93,12 @@ public class MainActivity extends AppCompatActivity implements Navigator {
         }
     }
 
-    private void showStartFragment(ArrayList<Region> regions) {
-        launchFragment(StartFragment.newInstance(regions), false);
+    private void showStartFragment() {
+        launchFragment(StartFragment.newInstance(), false);
     }
 
     @Override
-    public void showRegionListFragment(ArrayList<Region> regions) {
-        launchFragment(RegionListFragment.newInstance(regions), true);
+    public void showRegionListFragment(ArrayList<String> displayRegionQueue) {
+        launchFragment(RegionListFragment.newInstance(displayRegionQueue), true);
     }
 }

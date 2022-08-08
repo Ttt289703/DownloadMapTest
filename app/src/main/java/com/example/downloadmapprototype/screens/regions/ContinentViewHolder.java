@@ -1,4 +1,4 @@
-package com.example.downloadmapprototype;
+package com.example.downloadmapprototype.screens.regions;
 
 import android.view.View;
 import android.widget.TextView;

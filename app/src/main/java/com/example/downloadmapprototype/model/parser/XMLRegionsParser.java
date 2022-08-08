@@ -93,6 +93,7 @@ public class XMLRegionsParser {
         region.type = Region.Type.other;
         region.state = Region.State.unDownloaded;
         region.hasMap = true;
+        region.displayName = "";
         for (int index = 0; index < parser.getAttributeCount(); index++) {
             String attrname = parser.getAttributeName(index);
             String attrvalue = parser.getAttributeValue(index);
@@ -109,7 +110,7 @@ public class XMLRegionsParser {
                     }
                     break;
                 case ATTRIBUTE_NAME:
-                    region.name = attrvalue;
+                    region.setName(attrvalue);
                     break;
                 case ATTRIBUTE_MAP:
                     if (attrvalue.equals(VALUE_MAP_NO)) {
@@ -128,9 +129,9 @@ public class XMLRegionsParser {
     }
 
     private static String parseDisplayName(Region region) {
-        String displayName = region.name;
-        if (displayName.isEmpty()) {
-            displayName = capitalize(region.name);
+        String displayName = region.displayName;
+        if (displayName.isEmpty() || region.type == Region.Type.continent) {
+            displayName = capitalize(region.getName());
         } else {
             if (displayName.contains(";")) {
                 int endIndex = displayName.indexOf(";");
@@ -138,9 +139,11 @@ public class XMLRegionsParser {
             }
             if (displayName.contains("name:en=")) {
                 displayName = displayName.replace("name:en=", "");
-            } else {
-                displayName = region.name;
             }
+            if (displayName.contains("name:")) {
+                displayName = region.getName();
+            }
+
             displayName = capitalize(displayName);
         }
         return displayName;

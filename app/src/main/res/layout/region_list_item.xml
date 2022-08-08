@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="TextView"
+        tools:text="Denmark"
         android:textColor="@color/item_text"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
     <ImageButton
         android:id="@+id/button_download"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="26dp"
         android:layout_marginEnd="8dp"
         android:background="#00FFFFFF"
         app:tint="@color/item_icon"

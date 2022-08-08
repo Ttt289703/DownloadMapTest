@@ -11,26 +11,36 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class RegionService {
+    public final static String DOWNLOAD_DIRECTORY = "/Test/maps/";
+    public final static String DOWNLOAD_SUFFIX = "_2.obf.zip";
 
-    public static ArrayList<Region> regions;
+    ArrayList<RegionServiceListener> listeners = new ArrayList<>();
+    public ArrayList<Region> regions;
 
-    public static ArrayList<Region> getRegions(Context context) {
+    private static RegionService instance = null;
 
-        ArrayList<Region> regions = getFlatContinentAndCountriesList(XMLRegionsParser.parseRegions(context));
+    private RegionService(Context context) {
+        regions = getFlatContinentsAndRegionsList(XMLRegionsParser.parseRegions(context));
         updateDownloadedRegions(regions);
-        return regions;
+    }
+
+    public static RegionService getInstance(Context context) {
+        if (instance == null) {
+            instance = new RegionService(context);
+        }
+        return instance;
     }
 
     public static void sortRegion(ArrayList<Region> regions) {
         Collections.sort(regions, new Comparator<Region>() {
             @Override
-            public int compare(Region region, Region t1) {
-                return region.name.toLowerCase().compareTo(t1.name.toLowerCase());
+            public int compare(Region region1, Region region2) {
+                return region1.getName().toLowerCase().compareTo(region2.getName().toLowerCase());
             }
         });
     }
 
-    public static ArrayList<Region> getFlatContinentAndCountriesList(ArrayList<Region> regions) {
+    private static ArrayList<Region> getFlatContinentsAndRegionsList(ArrayList<Region> regions) {
         ArrayList<Region> flatRegionList = new ArrayList<>();
         for (int index = 0; index < regions.size(); index++) {
             Region continent = regions.get(index);
@@ -57,8 +67,6 @@ public class RegionService {
 
     private static boolean isDownloaded(Region region) {
         if (region.type != Region.Type.continent) {
-            File extStore = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            String subpath = getDownloadPath(region);
             File myFile = new File(getDownloadPath(region));
             if (myFile.exists()) {
                 return true;
@@ -69,11 +77,12 @@ public class RegionService {
         return false;
     }
 
-/*    public static void deleteRegion(Region region){
+/*    public static void deleteRegion(Region region, Context context){
         if(isDownloaded(region)){
             File extStore = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            String subpath = getRegionPath(region) + "_" + getContinent(region).name + "_2.obf.zip";
-            File myFile = new File(extStore.getAbsolutePath() + "/", subpath);
+            String subPath = getRegionPath(region) + "_" + getContinent(region).getName() + DOWNLOAD_SUFFIX;
+
+            File myFile = new File(extStore.getAbsolutePath() + DOWNLOAD_DIRECTORY + subPath);
             if(myFile.exists()){
                 if(myFile.delete()){
                     region.state = Region.State.unDownloaded;
@@ -84,23 +93,23 @@ public class RegionService {
 
     public static String getDownloadPath(Region region) {
         File extStore = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        String subpath = getRegionPath(region) + "_" + getContinent(region).name + "_2.obf.zip";
-        return extStore.getAbsolutePath() + "/" + subpath;
+        String subPath = getRegionPath(region) + "_" + getContinent(region).getName() + DOWNLOAD_SUFFIX;
+        return extStore.getAbsolutePath() + DOWNLOAD_DIRECTORY + subPath;
     }
 
     public static String getRegionPath(Region region) {
-        String result = region.name;
+        String result = region.getName();
         Region currentRegion = region;
         while (currentRegion.parent.type != Region.Type.continent) {
             currentRegion = currentRegion.parent;
-            result = currentRegion.name + "_" + result;
+            result = currentRegion.getName() + "_" + result;
         }
         return capitalize(result);
     }
 
     public static String getFullRegionPath(Region region) {
-        String result = region.name;
-        result = getRegionPath(region) + "_" + getContinent(region).name;
+        String result = region.getName();
+        result = getRegionPath(region) + "_" + getContinent(region).getName();
         return capitalize(result);
     }
 
@@ -115,5 +124,43 @@ public class RegionService {
 
     private static String capitalize(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
+    }
+
+
+    public static ArrayList<String> getRegionOrder(Region region) {
+        ArrayList<String> pathChain = new ArrayList<>();
+        Region curentRegion = region;
+        while (curentRegion.parent != null || (curentRegion.parent != null && curentRegion.parent.type != Region.Type.continent)) {
+            pathChain.add(curentRegion.getName());
+            curentRegion = curentRegion.parent;
+        }
+        return pathChain;
+    }
+
+    public void registerListener(RegionServiceListener listener) {
+        if (listeners.isEmpty() || !listeners.contains(listener)) {
+            listeners.add(listener);
+            listener.onRegionsChange(regions, null);
+        }
+    }
+
+    public void unregisterListener(RegionServiceListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void setRegionProgress(Region region, int progress) {
+        region.setDownloadProgress(progress);
+        notifyOnRegionsChange(region);
+    }
+
+    public void setRegionState(Region region, Region.State state) {
+        region.setState(state);
+        notifyOnRegionsChange(region);
+    }
+
+    private void notifyOnRegionsChange(Region updatedRegion) {
+        for (RegionServiceListener listener : listeners) {
+            listener.onRegionsChange(regions, updatedRegion);
+        }
     }
 }

@@ -7,11 +7,11 @@ import com.example.downloadmapprototype.model.data.Region;
 import java.util.ArrayList;
 
 
-public interface Navigator{
-    static Navigator getNavigator(Fragment fragment){
+public interface Navigator {
+    static Navigator getNavigator(Fragment fragment) {
         return (Navigator) fragment.requireActivity();
     }
 
-    void showRegionListFragment(ArrayList<Region> regions);
+    void showRegionListFragment(ArrayList<String> displayRegionQueue);
 
 }

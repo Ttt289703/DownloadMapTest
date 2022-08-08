@@ -1,11 +1,10 @@
-package com.example.downloadmapprototype;
+package com.example.downloadmapprototype.screens.regions;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -20,22 +19,33 @@ import java.util.ArrayList;
 
 interface RegionActionListener {
 
-    void onRegionDetails(Region region, int index);
+    void onRegionDetails(Region region);
 
-    void onRegionDownload(Region region, int index);
+    void onRegionDownload(Region region);
 }
 
 public class RegionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
-
-    private int itemsCount;
     private RegionActionListener regionActionListener;
-    private ArrayList<Region> regions;
+    private ArrayList<Region> regions = new ArrayList<>();
     private Context context;
 
-    public RegionsAdapter(int numberOfItems, ArrayList<Region> regions, RegionActionListener regionActionListener) {
-        this.regions = regions;
-        itemsCount = numberOfItems;
+    public RegionsAdapter(RegionActionListener regionActionListener) {
         this.regionActionListener = regionActionListener;
+    }
+
+    public void setRegions(ArrayList<Region> regions) {
+        this.regions = regions;
+    }
+
+    public void updateItem(Region updatedRegion) {
+        if (updatedRegion != null) {
+            for (Region region : regions) {
+                if (region.getName().equals(updatedRegion.getName())) {
+                    notifyItemChanged(regions.indexOf(region));
+
+                }
+            }
+        }
     }
 
     @Override
@@ -84,25 +94,16 @@ public class RegionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return itemsCount;
+        return regions.size();
     }
 
     @Override
     public void onClick(View view) {
         Region region = (Region) view.getTag();
-        int index = 0;
-        switch (view.getId()) {
-            case (R.id.button_download):
-                for (int _index = 0; _index < regions.size(); _index++) {
-                    if (regions.get(_index) == region) {
-                        index = _index;
-                    }
-                }
-
-                regionActionListener.onRegionDownload(region, index);
-                break;
-            default:
-                regionActionListener.onRegionDetails(region, index);
+        if (view.getId() == R.id.button_download) {
+            regionActionListener.onRegionDownload(region);
+        } else {
+            regionActionListener.onRegionDetails(region);
         }
     }
 
@@ -139,13 +140,14 @@ public class RegionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         constraintSet.connect(viewHolder.regionNameView.getId(), ConstraintSet.BOTTOM, viewHolder.parentConstraintLayout.getId(), ConstraintSet.BOTTOM, 0);
         constraintSet.applyTo(viewHolder.parentConstraintLayout);
 
-        viewHolder.downloadButton.setImageResource(R.drawable.ic_action_remove_dark);
+        viewHolder.downloadButton.setImageResource(R.drawable.ic_action_import);
     }
 
     private void applyIsDownloadingStyle(Region region, RegionViewHolder viewHolder, ConstraintSet constraintSet) {
         viewHolder.progressBar.setEnabled(true);
         viewHolder.progressBar.setVisibility(View.VISIBLE);
         viewHolder.progressBar.setProgress(region.downloadProgress);
+        viewHolder.downloadButton.setVisibility(View.VISIBLE);
         viewHolder.downloadButton.setColorFilter(context.getColor(R.color.item_icon));
         viewHolder.mapIcon.clearColorFilter();
 
@@ -160,6 +162,7 @@ public class RegionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void applyUnDownloadedStyle(RegionViewHolder viewHolder, ConstraintSet constraintSet) {
         viewHolder.progressBar.setEnabled(false);
         viewHolder.progressBar.setVisibility(View.INVISIBLE);
+        viewHolder.downloadButton.setVisibility(View.VISIBLE);
         viewHolder.downloadButton.setColorFilter(context.getColor(R.color.item_icon));
         viewHolder.mapIcon.clearColorFilter();
 

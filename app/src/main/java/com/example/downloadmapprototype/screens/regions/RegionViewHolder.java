@@ -1,4 +1,4 @@
-package com.example.downloadmapprototype;
+package com.example.downloadmapprototype.screens.regions;
 
 import android.view.View;
 import android.widget.ImageButton;
@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.downloadmapprototype.R;
 
 public class RegionViewHolder extends RecyclerView.ViewHolder {
-
     public TextView regionNameView;
     public ImageButton downloadButton;
     public ProgressBar progressBar;
